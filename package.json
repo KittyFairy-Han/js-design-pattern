@@ -1,0 +1,24 @@
+{
+  "name": "design-ms",
+  "version": "1.0.0",
+  "description": "js设计模式学习",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --config ./webpack.dev.config.js --mode development"
+  },
+  "keywords": [
+    "js",
+    "设计模式"
+  ],
+  "author": "鱼小柔",
+  "license": "ISC",
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    
+    "webpack-dev-server": "^3.8.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+
+  }
+}
