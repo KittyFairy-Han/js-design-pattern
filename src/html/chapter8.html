@@ -41,7 +41,7 @@
             console.log('($(this)', $(this))
             $('.part').not($(this)).css('background-color', 'black')
         }
-        
+
         $('.part').click(function () {
             console.log('($(this)', $(this))
             console.log('this', this)
@@ -49,7 +49,7 @@
             /* 代理模式的体现 */
             // jq.proxy 做代理this绑定为当前环境，如果不用代理则this是window 
             setTimeout($.proxy(cbFn, this), 1000)
-            
+
             /* PS */
             // 其实关于this的绑定，是可以使用箭头函数解决的，但是此情景下时无法改变原函数的，所以用代理的方案
             // cbArrowFn = () => {
