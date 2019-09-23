@@ -15,39 +15,39 @@ console.log(`~*~*~*~*~*~*~*~*~*~*~~~~概念 - 观察者模式//~*~*~*~*~*~*~*~*~
 /* 使用 */
 /* 主题 */
 class Subject {
-  constructor() {
-    // debugger
-    this.state = 0
-    this.observers = []
-  }
-  getState() {
-    return this.state
-  }
-  setState(state) {
-    // debugger
-    this.state = state
-    this.notifyAllObservers()
-  }
-  notifyAllObservers() {
-    this.observers.forEach(observer => {
-      observer.update()
-    });
-  }
-  attach(newObserver) {
-    this.observers.push(newObserver)
-  }
+    constructor() {
+        // debugger
+        this.state = 0
+        this.observers = []
+    }
+    getState() {
+        return this.state
+    }
+    setState(state) {
+        // debugger
+        this.state = state
+        this.notifyAllObservers()
+    }
+    notifyAllObservers() {
+        this.observers.forEach(observer => {
+            observer.update()
+        });
+    }
+    attach(newObserver) {
+        this.observers.push(newObserver)
+    }
 }
 
 /* 观察者 */
 class Observer {
-  constructor(name, subject) {
-    this.name = name
-    this.subject = subject
-    this.subject.attach(this)
-  }
-  update() {
-    console.log(`this.subject is watching by ${this.name} this.subject's prop:state = ${this.subject.state}`)
-  }
+    constructor(name, subject) {
+        this.name = name
+        this.subject = subject
+        this.subject.attach(this)
+    }
+    update() {
+        console.log(`this.subject is watching by ${this.name} this.subject's prop:state = ${this.subject.state}`)
+    }
 }
 
 /* 测试代码 */
@@ -67,13 +67,13 @@ let callBacks = $.Callbacks()
 
 /* 添加一个观察者 <=> subject.attach(#下面三个回调函数#) */
 callBacks.add(function (info) {
-  console.log('cb1', info)
+    console.log('cb1', info)
 })
 callBacks.add(function (info) {
-  console.log('cb2', info)
+    console.log('cb2', info)
 })
 callBacks.add(function (info) {
-  console.log('cb3', info)
+    console.log('cb3', info)
 })
 
 /* 触发 <=> subject.setState('触发时携带的内容') */
