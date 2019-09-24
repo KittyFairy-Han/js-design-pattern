@@ -2,95 +2,111 @@
  * @Author: 鱼小柔 
  * @Date: 2019-09-20 08:03:19 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-09-24 07:24:44
+ * @Last Modified time: 2019-09-25 07:27:22
  */
 
 /* 
 模式概念 
 */
-console.log(`~*~*~*~*~*~*~*~*~*~*~~~~概念 - 观察者模式//~*~*~*~*~*~*~*~*~*~*~`)
+
 /* 介绍 */
-// 一个主题有N个观察者，当主题改变时，触发观察者行为
+// 顺序访问一个集合
+// 使用者无需知道集合内部的结构（封装）
+// nodeList 和 JQList 都不是数组,所以不能用 forEach 去遍历。由此可见遍历三个数据结构要用到三种不同的方法。
+// 写一个方法 myEach 满足三种数据结构的遍历,这个方法就是一个迭代器的作用
 
 /* 使用 */
-/* 主题 */
-class Subject {
-  constructor() {
-    // debugger
-    this.state = 0
-    this.observers = []
+/* class */
+class Container {
+  constructor(list) {
+    this.list = list
   }
-  getState() {
-    return this.state
-  }
-  setState(state) {
-    // debugger
-    this.state = state
-    this.notifyAllObservers()
-  }
-  notifyAllObservers() {
-    this.observers.forEach(observer => {
-      observer.update()
-    });
-  }
-  attach(newObserver) {
-    this.observers.push(newObserver)
+  getIterator() {
+    return new Iterator(this)
   }
 }
 
-/* 观察者 */
-class Observer {
-  constructor(name, subject) {
-    this.name = name
-    this.subject = subject
-    this.subject.attach(this)
+
+/* 迭代器 */
+class Iterator {
+  constructor(container) {
+    this.list = container.list
+    this.index = 0
   }
-  update() {
-    console.log(`this.subject is watching by ${this.name} this.subject's prop:state = ${this.subject.state}`)
+  next() {
+    if (!this.hasNext()) {
+      return null
+    }
+    return this.list[this.index++]
+  }
+  hasNext() {
+    if (this.index >= this.list.length) {
+      return false
+    }
+    return true
   }
 }
 
 /* 测试代码 */
-let mys = new Subject()
-let o1 = new Observer('o1', mys)
-let o2 = new Observer('o2', mys)
-let o3 = new Observer('o3', mys)
-mys.setState(2)
+let container = new Container([1, 2, 3, 4, 5, 6, 7])
+let iterator = container.getIterator()
+if (iterator.hasNext()) {
+  console.log(iterator.next())
+}
 
 /* 
- 应用场景举例 - jQ callbacks
+ 应用场景举例 - jq myEach
 */
-// 核心代码如下，完整代码看html
-
-/* callBacks 类 */
-let callBacks = $.Callbacks()
-
-/* 添加一个观察者 <=> subject.attach(#下面三个回调函数#) */
-callBacks.add(function (info) {
-  console.log('cb1', info)
-})
-callBacks.add(function (info) {
-  console.log('cb2', info)
-})
-callBacks.add(function (info) {
-  console.log('cb3', info)
-})
-
-/* 触发 <=> subject.setState('触发时携带的内容') */
-callBacks.fire('触发时携带的内容')
 
 
 /* 
- 应用场景举例 - nodejs 自定义事件
+ 应用场景举例 - es6 iterator
 */
-// 看chapter10-3.js,控制台命令 $ node [js文件名],结果在控制台打印非浏览器
+// why
+// es6语法中，有多种数据结构都是有序的数据集合，不仅仅是数组还有 Map Set String arguments NodeList等
+// 有序的数据集合都是可遍历的，但是由于不是数组，并不能用foreach，所以Iterator出现，为所有可遍历的数据集合提供统一的接口
+// how
+// 以上数据类型都有[Symbol.iterator]属性
+// 属性是个函数，执行函数返回一个迭代器
+// 迭代器有next方法 可顺序迭代子元素 
+// 可运行Array.prototype[Symbol.iterator]来测试
 
+/* 封装一个遍历方法 */
+console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - Symbol.iterator//~*~*~*~*~*~*~*~*~*~*~`)
+function myEach(data) {
+  let iterator = data[Symbol.iterator]
+  let item = {
+    done: false
+  }
+  while (item.done) {
+    item = iterator.next()
+    if (!item.done) {
+      console.log(item.value)
+    } else {
+      console.log('遍历结束')
+    }
 
-/* 
-其他场景
-*/
-//promise then
-//事件监听 click等
-//nodejs中 处理http请求 多进程通信
-//vue 和 react 组件生命周期
-//vue watch选项
+  }
+}
+/* 测试 */
+let arr = [1, 2, 3]
+let brr = {
+  0: 4,
+  1: 5,
+  2: 6,
+  length: 3
+}
+myEach(arr)
+myEach(brr)
+
+/* 结合 for of 语法封装一个遍历方法 */
+console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - for of//~*~*~*~*~*~*~*~*~*~*~`)
+function myEach2(data) {
+  for (let item of data) {
+    console.log(item)
+  }
+}
+
+/* 测试 */
+myEach2(arr)
+myEach2(brr)

@@ -35,23 +35,31 @@
         <div class="part" id="part4">PART FOUR</div>
     </div>
     <script>
-        console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景jqcallbacks类 - 观察者模式//~*~*~*~*~*~*~*~*~*~*~`)
-        /* callBacks 类 */
-        let callBacks = $.Callbacks()
+        console.log('概念解释')
+        let arr = [1, 2, 3]
+        let nodeList = document.getElementsByTagName('div')
+        let $divList = $('div')
 
-        /* 添加一个观察者 <=> subject.attach(#下面三个回调函数#) */
-        callBacks.add(function (info) {
-            console.log('cb1', info)
-        })
-        callBacks.add(function (info) {
-            console.log('cb2', info)
-        })
-        callBacks.add(function (info) {
-            console.log('cb3', info)
+        // 遍历数组
+        arr.forEach((item) => {
+            // console.log(item)
         })
 
-        /* 触发 <=> subject.setState('触发时携带的内容') */
-        callBacks.fire('触发时携带的内容')
+        // 遍历 nodeList 对象
+        for (let i = 0; i < nodeList.length; i++) {
+            // console.log(nodeList[i])
+        }
+
+        // 遍历 jq对象 列表
+        $divList.each((key, item) => {
+            // console.log(key, item)
+        })
+
+        // nodeList 和 JQList 都不是数组,所以不能用 forEach 去遍历。由此可见遍历三个数据结构要用到三种不同的方法。
+        // 写一个方法 myEach 满足三种数据结构的遍历,这个方法就是一个迭代器
+        function myEach(){
+
+        }
     </script>
 </body>
 
