@@ -2,7 +2,7 @@
  * @Author: 鱼小柔 
  * @Date: 2019-09-20 08:03:19 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-09-25 07:27:22
+ * @Last Modified time: 2019-09-25 08:12:06
  */
 
 /* 
@@ -74,30 +74,21 @@ if (iterator.hasNext()) {
 /* 封装一个遍历方法 */
 console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - Symbol.iterator//~*~*~*~*~*~*~*~*~*~*~`)
 function myEach(data) {
-  let iterator = data[Symbol.iterator]
-  let item = {
-    done: false
-  }
-  while (item.done) {
-    item = iterator.next()
-    if (!item.done) {
-      console.log(item.value)
-    } else {
-      console.log('遍历结束')
-    }
-
+  let iterator = data[Symbol.iterator]()
+  let isDone = false
+  while (!isDone) {
+    const step = iterator.next()
+    console.log(step)
+    isDone = step.done
+    const item = step.value
+    item && console.log(item)
   }
 }
 /* 测试 */
 let arr = [1, 2, 3]
-let brr = {
-  0: 4,
-  1: 5,
-  2: 6,
-  length: 3
-}
+let divList = document.getElementsByTagName('div')
 myEach(arr)
-myEach(brr)
+// myEach(divList)
 
 /* 结合 for of 语法封装一个遍历方法 */
 console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - for of//~*~*~*~*~*~*~*~*~*~*~`)
@@ -109,4 +100,4 @@ function myEach2(data) {
 
 /* 测试 */
 myEach2(arr)
-myEach2(brr)
+myEach2(divList)
