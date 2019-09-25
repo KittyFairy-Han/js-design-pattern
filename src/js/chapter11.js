@@ -2,7 +2,7 @@
  * @Author: 鱼小柔 
  * @Date: 2019-09-20 08:03:19 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-09-25 08:17:29
+ * @Last Modified time: 2019-09-25 08:18:30
  */
 
 /* 
@@ -20,17 +20,17 @@ let $divList = $('div')
 
 // 遍历数组
 array.forEach((item) => {
-  // console.log(item)
+    // console.log(item)
 })
 
 // 遍历 nodeList 对象
 for (let i = 0; i < nodeList.length; i++) {
-  // console.log(nodeList[i])
+    // console.log(nodeList[i])
 }
 
 // 遍历 jq对象 列表
 $divList.each((key, item) => {
-  // console.log(key, item)
+    // console.log(key, item)
 })
 
 // nodeList 和 JQList 都不是数组,所以不能用 forEach 去遍历。由此可见遍历三个数据结构要用到三种不同的方法。
@@ -42,40 +42,40 @@ function myEach() {
 /* 使用 */
 /* class */
 class Container {
-  constructor(list) {
-    this.list = list
-  }
-  getIterator() {
-    return new Iterator(this)
-  }
+    constructor(list) {
+        this.list = list
+    }
+    getIterator() {
+        return new Iterator(this)
+    }
 }
 
 
 /* 迭代器 */
 class Iterator {
-  constructor(container) {
-    this.list = container.list
-    this.index = 0
-  }
-  next() {
-    if (!this.hasNext()) {
-      return null
+    constructor(container) {
+        this.list = container.list
+        this.index = 0
     }
-    return this.list[this.index++]
-  }
-  hasNext() {
-    if (this.index >= this.list.length) {
-      return false
+    next() {
+        if (!this.hasNext()) {
+            return null
+        }
+        return this.list[this.index++]
     }
-    return true
-  }
+    hasNext() {
+        if (this.index >= this.list.length) {
+            return false
+        }
+        return true
+    }
 }
 
 /* 测试代码 */
 let container = new Container([1, 2, 3, 4, 5, 6, 7])
 let iterator = container.getIterator()
 if (iterator.hasNext()) {
-  console.log(iterator.next())
+    console.log(iterator.next())
 }
 
 /* 
@@ -99,15 +99,15 @@ if (iterator.hasNext()) {
 console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - Symbol.iterator//~*~*~*~*~*~*~*~*~*~*~`)
 
 function myEach(data) {
-  let iterator = data[Symbol.iterator]()
-  let isDone = false
-  while (!isDone) {
-    const step = iterator.next()
-    console.log(step)
-    isDone = step.done
-    const item = step.value
-    item && console.log(item)
-  }
+    let iterator = data[Symbol.iterator]()
+    let isDone = false
+    while (!isDone) {
+        const step = iterator.next()
+        console.log(step)
+        isDone = step.done
+        const item = step.value
+        item && console.log(item)
+    }
 }
 /* 测试 */
 let arr = [1, 2, 3]
@@ -119,9 +119,9 @@ myEach(arr)
 console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - for of//~*~*~*~*~*~*~*~*~*~*~`)
 
 function myEach2(data) {
-  for (let item of data) {
-    console.log(item)
-  }
+    for (let item of data) {
+        console.log(item)
+    }
 }
 
 /* 测试 */
