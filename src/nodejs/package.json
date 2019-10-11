@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "javascript-state-machine": "^3.1.0"
+  },
+  "devDependencies": {
+    "javascript-state-machine": "^3.1.0"
+  }
+}
