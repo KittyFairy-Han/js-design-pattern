@@ -2,7 +2,7 @@
  * @Author: 鱼小柔 
  * @Date: 2019-10-11 08:23:02 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-10-12 08:18:21
+ * @Last Modified time: 2019-10-12 08:50:51
  */
 
 /* 命令模式 */
@@ -40,6 +40,28 @@ console.log('%%%%%%%%%%%%%%%%%%%%%%---备忘录模式---%%%%%%%%%%%%%%%%%%%%%%%%
 
 /* 职责链模式 */
 console.log('%%%%%%%%%%%%%%%%%%%%%%---职责链模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+class Action {
+    constructor(name) {
+        this.name = name
+        this.nextAction = null
+    }
+    setNextAction(action) {
+        this.nextAction = action
+    }
+    handle() {
+        console.log(`${this.name} 审批`)
+        if (this.nextAction != null) {
+            this.nextAction.handle()
+        }
+    }
+}
+//测试代码
+let step1 = new Action('组长')
+let step2 = new Action('经理')
+let step3 = new Action('总监')
+step1.setNextAction(step2)
+step2.setNextAction(step3)
+step1.handle()
 
 /* 中介者模式 */
 console.log('%%%%%%%%%%%%%%%%%%%%%%---中介者模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
@@ -94,8 +116,11 @@ console.log(a.number, b.number)
 
 /* 策略模式 */
 console.log('%%%%%%%%%%%%%%%%%%%%%%---策略模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+
+
 /* 组合模式（树形结构） */
 console.log('%%%%%%%%%%%%%%%%%%%%%%---组合模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+
 /* 桥接模式 */
 console.log('%%%%%%%%%%%%%%%%%%%%%%---桥接模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
 /* 原型模式 */
