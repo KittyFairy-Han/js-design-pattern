@@ -2,7 +2,7 @@
  * @Author: 鱼小柔 
  * @Date: 2019-09-20 08:03:19 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-09-25 08:17:29
+ * @Last Modified time: 2019-09-30 07:20:43
  */
 
 /* 
@@ -10,120 +10,233 @@
 */
 
 /* 介绍 */
-// 顺序访问一个集合
-// 使用者无需知道集合内部的结构（封装）
-// nodeList 和 JQList 都不是数组,所以不能用 forEach 去遍历。由此可见遍历三个数据结构要用到三种不同的方法。
-// 写一个方法 myEach 满足三种数据结构的遍历,这个方法就是一个迭代器的作用
-let array = [1, 2, 3]
-let nodeList = document.getElementsByTagName('div')
-let $divList = $('div')
+// 一个对象有不同状态
+// 不同状态执行不同逻辑
+// 总不能用if else 所以就有了状态模式
 
-// 遍历数组
-array.forEach((item) => {
-  // console.log(item)
-})
-
-// 遍历 nodeList 对象
-for (let i = 0; i < nodeList.length; i++) {
-  // console.log(nodeList[i])
-}
-
-// 遍历 jq对象 列表
-$divList.each((key, item) => {
-  // console.log(key, item)
-})
-
-// nodeList 和 JQList 都不是数组,所以不能用 forEach 去遍历。由此可见遍历三个数据结构要用到三种不同的方法。
-// 写一个方法 myEach 满足三种数据结构的遍历,这个方法就是一个迭代器
-function myEach() {
-
-}
 
 /* 使用 */
-/* class */
-class Container {
-  constructor(list) {
-    this.list = list
+/* class(主体) */
+class Context {
+  constructor() {
+    this.state = null
   }
-  getIterator() {
-    return new Iterator(this)
+  getState() {
+    return this.state
   }
+  setState(state) {
+    this.state = state
+  }
+
 }
 
 
-/* 迭代器 */
-class Iterator {
-  constructor(container) {
-    this.list = container.list
-    this.index = 0
+/* 状态 */
+class State {
+  constructor(color) {
+    this.color = color
   }
-  next() {
-    if (!this.hasNext()) {
-      return null
-    }
-    return this.list[this.index++]
-  }
-  hasNext() {
-    if (this.index >= this.list.length) {
-      return false
-    }
-    return true
+  handle(context) {
+    console.log(`turn to ${this.color} light`)
+    context.setState(this)
   }
 }
 
 /* 测试代码 */
-let container = new Container([1, 2, 3, 4, 5, 6, 7])
-let iterator = container.getIterator()
-if (iterator.hasNext()) {
-  console.log(iterator.next())
-}
+let context = new Context()
+
+let green = new State('green')
+let red = new State('red')
+let yellow = new State('yellow')
+
+green.handle(context)
+console.log(context.getState())
+yellow.handle(context)
+red.handle(context)
+
 
 /* 
- 应用场景举例 - jq myEach
+ 应用场景举例 - 有限状态机
 */
+console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - 有限状态机//~*~*~*~*~*~*~*~*~*~*~`)
 
+
+/* 主体 */
+class UpdateDom {
+  constructor() {
+    this.state = ''
+  }
+  showState() {
+    return this.state
+  }
+  setState(state) {
+    console.log(state)
+    // console.log(this)
+    this.state = state
+    this.showState()
+  }
+}
+let updateDom = new UpdateDom()
+/* 状态机类 */
+const StateMachine = require('javascript-state-machine');
+let fsm = new StateMachine({
+  init: '取消收藏',
+  // 状态集合
+  transitions: [{
+      name: 'doStore',
+      from: '取消收藏',
+      to: '收藏'
+    },
+    {
+      name: 'deleteStore',
+      from: '收藏',
+      to: '取消收藏'
+    },
+  ],
+  methods: {
+    // 执行收藏 <=> [状态过渡].handle([主体])
+    onDoStore(self, updateDom) {
+      // 主体接下来的业务逻辑
+      // console.log(this, updateDom)
+      updateDom.setState(this.state)
+      $('#app #part1').text(`现在的状态是：${this.state}`)
+      $('#app #part1').css({
+        backgroundColor: this.state === '收藏' ? 'red' : 'grey'
+      })
+    },
+    // 取消收藏 <=> [状态过渡].handle([主体])
+    onDeleteStore(self, updateDom) {
+      // 主体接下来的业务逻辑
+      // console.log(this, updateDom)
+      updateDom.setState(this.state)
+      $('#app #part1').text(`现在的状态是：${this.state}`)
+      $('#app #part1').css({
+        backgroundColor: this.state === '收藏' ? 'red' : 'grey'
+      })
+    }
+  }
+})
+
+/* 测试 */
+$('#app').click(() => {
+  if (fsm.is('收藏')) {
+    // 【状态机】.【状态过渡】 <=> [某一状态过渡].handle([主体])
+    fsm.deleteStore(updateDom)
+  } else {
+    // 【状态机】.【状态过渡】 <=> [某一状态过渡].handle([主体])
+    fsm.doStore(updateDom)
+  }
+})
 
 /* 
- 应用场景举例 - es6 iterator
+ 应用场景举例 - Promise
 */
-// why
-// es6语法中，有多种数据结构都是有序的数据集合，不仅仅是数组还有 Map Set String arguments NodeList等
-// 有序的数据集合都是可遍历的，但是由于不是数组，并不能用foreach，所以Iterator出现，为所有可遍历的数据集合提供统一的接口
-// how
-// 以上数据类型都有[Symbol.iterator]属性
-// 属性是个函数，执行函数返回一个迭代器
-// 迭代器有next方法 可顺序迭代子元素 
-// 可运行Array.prototype[Symbol.iterator]来测试
+console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - Promise//~*~*~*~*~*~*~*~*~*~*~`)
 
-/* 封装一个遍历方法 */
-console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - Symbol.iterator//~*~*~*~*~*~*~*~*~*~*~`)
-
-function myEach(data) {
-  let iterator = data[Symbol.iterator]()
-  let isDone = false
-  while (!isDone) {
-    const step = iterator.next()
-    console.log(step)
-    isDone = step.done
-    const item = step.value
-    item && console.log(item)
+/* Promise类 */
+class myPromise {
+  constructor(bussnessFn) {
+    
+    bussnessFn(this.resolve, this.reject)
   }
-}
-/* 测试 */
-let arr = [1, 2, 3]
-let divList = document.getElementsByTagName('div')
-myEach(arr)
-// myEach(divList)
 
-/* 结合 for of 语法封装一个遍历方法 */
-console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - for of//~*~*~*~*~*~*~*~*~*~*~`)
-
-function myEach2(data) {
-  for (let item of data) {
-    console.log(item)
+  setState(state) {
+    this.state = state
   }
+
+  resolve(data) {
+    console.log(this)
+    promise.data = data
+    fsm1.resolve(this)
+  }
+
+  reject(errorInfo){
+    promise.errorInfo = errorInfo
+    fsm1.reject(this)
+  }
+
+  then(succesFn, failFn) {
+    promise.succesFn = succesFn
+    this.failFn = failFn
+  }
+
+  catch(errorFn){
+    promise.errorFn = errorFn
+  }
+  //pending状态 执行bussnessFn
+  //resolve状态 执行
 }
 
-/* 测试 */
-myEach2(arr)
-myEach2(divList)
+/* 有限状态机类 */
+let fsm1 = new StateMachine({
+  init: 'pending',
+  transitions: [{
+      name: 'resolve',
+      from: 'pending',
+      to: 'successed'
+    },
+    {
+      name: 'reject',
+      from: 'pending',
+      to: 'failed'
+    },
+  ],
+  methods: {
+    // 执行成功
+    onResolve(fsm, promise) {
+      alert('onResolve------')
+      promise.setState(fsm.to)
+      if(promise.data.type){
+         promise.succesFn(promise.data)
+      }else{
+         promise.failFn(promise.data)
+      } 
+    },
+    // 执行失败
+    onReject(fsm, promise) {
+      alert('onReject-------')
+      promise.setState(fsm.to)
+      promise.errorFn(promise.errorInfo)
+    }
+  }
+})
+
+let promise
+// 测试代码
+function loadImg(url) {
+  const bussnessFn = (resolve, reject) => {
+    let img = document.createElement('img')
+    img.src = url
+    img.onload = () => {
+      //异步请求成功
+      const data = {
+        type:parseInt(Math.random()*2),
+        width:500,
+        height:200
+      }
+      resolve(data)
+      
+    }
+    img.onerror = () => {
+      //异步请求失败
+      reject()
+      
+    }
+
+    return promise
+  }
+  promise = new myPromise(bussnessFn)
+  return promise
+
+}
+loadImg('//www.baidu.com/img/dong_a16028f60eed614e4fa191786f32f417.gif').then(successFn, failFn)
+const successFn = (successData) => {
+   console.log(successData)
+}
+const failFn = (failData) => {
+  console.log(failData)
+}
+loadImg('//www.baidu.com/img/dong_a16028f60eed614e4fa191786f32f417.gif').catch(errorFn)
+const errorFn = (errorInfo) => {
+  console.log(errorInfo)
+}
