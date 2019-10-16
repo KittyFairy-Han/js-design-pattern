@@ -1,129 +1,298 @@
 /*
  * @Author: 鱼小柔 
- * @Date: 2019-09-20 08:03:19 
+ * @Date: 2019-10-11 08:23:02 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-09-25 08:17:29
+ * @Last Modified time: 2019-10-16 08:02:18
  */
 
-/* 
-模式概念 
-*/
-
-/* 介绍 */
-// 顺序访问一个集合
-// 使用者无需知道集合内部的结构（封装）
-// nodeList 和 JQList 都不是数组,所以不能用 forEach 去遍历。由此可见遍历三个数据结构要用到三种不同的方法。
-// 写一个方法 myEach 满足三种数据结构的遍历,这个方法就是一个迭代器的作用
-let array = [1, 2, 3]
-let nodeList = document.getElementsByTagName('div')
-let $divList = $('div')
-
-// 遍历数组
-array.forEach((item) => {
-  // console.log(item)
-})
-
-// 遍历 nodeList 对象
-for (let i = 0; i < nodeList.length; i++) {
-  // console.log(nodeList[i])
-}
-
-// 遍历 jq对象 列表
-$divList.each((key, item) => {
-  // console.log(key, item)
-})
-
-// nodeList 和 JQList 都不是数组,所以不能用 forEach 去遍历。由此可见遍历三个数据结构要用到三种不同的方法。
-// 写一个方法 myEach 满足三种数据结构的遍历,这个方法就是一个迭代器
-function myEach() {
-
-}
-
-/* 使用 */
-/* class */
-class Container {
-  constructor(list) {
-    this.list = list
+/* 职责链模式 */
+// 一个对象,多个实例之间按顺序执行
+console.log('%%%%%%%%%%%%%%%%%%%%%%---职责链模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+class Action {
+  constructor(name) {
+    this.name = name
+    this.nextAction = null
   }
-  getIterator() {
-    return new Iterator(this)
+  setNextAction(action) {
+    this.nextAction = action
   }
-}
-
-
-/* 迭代器 */
-class Iterator {
-  constructor(container) {
-    this.list = container.list
-    this.index = 0
-  }
-  next() {
-    if (!this.hasNext()) {
-      return null
+  handle() {
+    console.log(`${this.name} 审批`)
+    if (this.nextAction != null) {
+      this.nextAction.handle()
     }
-    return this.list[this.index++]
   }
-  hasNext() {
-    if (this.index >= this.list.length) {
-      return false
+}
+//测试代码
+let step1 = new Action('组长')
+let step2 = new Action('经理')
+let step3 = new Action('总监')
+step1.setNextAction(step2)
+step2.setNextAction(step3)
+step1.handle()
+
+/* 命令模式 */
+// 发布命令者(少)与接受者分开(多)，命令对象作为中转站
+// 少:多 数据单项流通
+console.log('%%%%%%%%%%%%%%%%%%%%%%---命令模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+class Receiver {
+  constructor(name) {
+    this.name = name
+  }
+  exec() {
+    console.log(this.name + ':执行')
+  }
+}
+class Command {
+  constructor(name, receiver) {
+    this.name = name
+    this.receiver = receiver
+  }
+  cmd() {
+    console.log(this.name + ':触发命令')
+    this.receiver.exec()
+  }
+}
+class Invoker {
+  constructor(name, command) {
+    this.name = name
+    this.command = command
+  }
+  ivk() {
+    console.log(this.name + ':发起')
+    this.command.cmd()
+  }
+}
+//测试代码
+let soldier = new Receiver('士兵')
+let trumpeter = new Command('小号手', soldier)
+let general = new Invoker('将军', trumpeter)
+general.invoke()
+
+/* 中介者模式 */
+// N:N 数据双向流通
+console.log('%%%%%%%%%%%%%%%%%%%%%%---中介者模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+class Mediator {
+  constructor(name, a, b) {
+    this.name = name
+    this.a = a
+    this.b = b
+  }
+  setA() {
+    console.log(`${this.name} : ${this.b}->${this.a}`)
+    let num = this.b.number
+    this.a.setNumber(num + 100)
+  }
+  setB() {
+    console.log(`${this.name} : ${this.a}->${this.b}`)
+    let num = this.a.number
+    this.b.setNumber(num - 100)
+  }
+
+}
+class A {
+  constructor(name) {
+    this.name = name
+    this.number = 0
+  }
+  setNumber(num, m) {
+    this.number = num
+    console.log(this.name + ':' + this.number)
+    m && m.setB()
+  }
+}
+class B {
+  constructor(name) {
+    this.name = name
+    this.number = 0
+  }
+  setNumber(num, m) {
+    this.number = num
+    console.log(this.name + ':' + this.number)
+    m && m.setA()
+  }
+}
+//测试代码
+let saler = new A('房东')
+let payer = new B('租客')
+let m = new Mediator('房产中介', saler, payer)
+saler.setNumber(1000)
+payer.setNumber(100)
+
+
+/* 策略模式 */
+// 不同类型用户执行不同策略，直接拆分成多个类处理，就不用大量的if else了
+console.log('%%%%%%%%%%%%%%%%%%%%%%---策略模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+class LowRank {
+  todo() {
+    console.log(`普通用户购买`)
+  }
+}
+class MidRank {
+  todo() {
+    console.log(`会员用户购买`)
+  }
+}
+class SuperRank {
+  todo() {
+    console.log(`vip 购买`)
+  }
+}
+// 测试代码
+const orUser = new LowRank()
+orUser.todo()
+const memeberUser = new MidRank()
+memeberUser.todo()
+const vip = new SuperRank()
+vip.todo()
+
+
+/* 桥接模式 */
+// 一个类拆分成两个类 再连接
+console.log('%%%%%%%%%%%%%%%%%%%%%%---桥接模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+/* class ColorShape {
+    yellowCircle(){
+        console.log('yellow circle')
     }
-    return true
+    redCircle() {
+        console.log('red circle')
+    }
+    yellowTri() {
+        console.log('yellow triangle')
+    }
+    redTri() {
+        console.log('red triangle')
+    }
+}
+// 测试代码
+let cs = new ColorShape()
+cs.yellowCircle()
+cs.redCircle()
+cs.yellowTri()
+cs.redTri() */
+class Color {
+  constructor(type) {
+    this.type = type
   }
 }
-
-/* 测试代码 */
-let container = new Container([1, 2, 3, 4, 5, 6, 7])
-let iterator = container.getIterator()
-if (iterator.hasNext()) {
-  console.log(iterator.next())
-}
-
-/* 
- 应用场景举例 - jq myEach
-*/
-
-
-/* 
- 应用场景举例 - es6 iterator
-*/
-// why
-// es6语法中，有多种数据结构都是有序的数据集合，不仅仅是数组还有 Map Set String arguments NodeList等
-// 有序的数据集合都是可遍历的，但是由于不是数组，并不能用foreach，所以Iterator出现，为所有可遍历的数据集合提供统一的接口
-// how
-// 以上数据类型都有[Symbol.iterator]属性
-// 属性是个函数，执行函数返回一个迭代器
-// 迭代器有next方法 可顺序迭代子元素 
-// 可运行Array.prototype[Symbol.iterator]来测试
-
-/* 封装一个遍历方法 */
-console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - Symbol.iterator//~*~*~*~*~*~*~*~*~*~*~`)
-
-function myEach(data) {
-  let iterator = data[Symbol.iterator]()
-  let isDone = false
-  while (!isDone) {
-    const step = iterator.next()
-    console.log(step)
-    isDone = step.done
-    const item = step.value
-    item && console.log(item)
+class Shape {
+  constructor(type, color) {
+    this.type = type
+    this.color = color
+  }
+  draw() {
+    console.log(`${this.type} ${this.color}`)
   }
 }
-/* 测试 */
-let arr = [1, 2, 3]
-let divList = document.getElementsByTagName('div')
-myEach(arr)
-// myEach(divList)
+//测试代码
+let red = new Color('red')
+let yellow = new Color('red')
+let circle = new Color('circle', red)
+let triangle = new Color('triangle', yellow)
+circle.draw()
+triangle.draw()
 
-/* 结合 for of 语法封装一个遍历方法 */
-console.log(`~*~*~*~*~*~*~*~*~*~*~~~~应用场景举例 - es6 iterator - for of//~*~*~*~*~*~*~*~*~*~*~`)
-
-function myEach2(data) {
-  for (let item of data) {
-    console.log(item)
+/* 备忘录模式 */
+console.log('%%%%%%%%%%%%%%%%%%%%%%---备忘录模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+// 备忘状态
+class Memeto {
+  constructor(content) {
+    this.content = content
+  }
+  getContent() {
+    return this.content
   }
 }
+// 备忘列表
+class CareTaker {
+  constructor() {
+    this.list = []
+  }
+  add(memeto) {
+    this.list.push(memeto)
+  }
+  get(index) {
+    return this.list.pop()
+  }
+}
+// 编辑器
+class Editor {
+  constructor() {
+    this.ck = new CareTaker()
+    this.content = null
+  }
+  setContent(content) {
+    this.content = content
+  }
+  saveContentToMemeto() {
+    this.ck.add(new Memeto(this.content))
+  }
+  getContentFeomMemeto() {
+    this.content = memeto.getContent()
+  }
+}
+// 测试代码
+let editor = new Editor()
+editor.setContent('输入111')
+editor.setContent('修改222')
+editor.saveContentToMemeto() //保存
+editor.setContent('修改333')
+editor.saveContentToMemeto() //保存
+editor.setContent('修改444')
+editor.getContentFeomMemeto() //撤销
+editor.getContentFeomMemeto() //撤销
 
-/* 测试 */
-myEach2(arr)
-myEach2(divList)
+/* 原型模式 */
+console.log('%%%%%%%%%%%%%%%%%%%%%%---原型模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+const prototypeObj = {
+  getName() {
+    return this.first + ' ' + this.last
+  }
+}
+//测试代码
+let x = Object.create(prototypeObj)
+x.first = 'A'
+x.last = 'B'
+alert(x.getName())
+
+/* 组合模式（树形结构） */
+// 整体和单个节点操作一致，整体和单个节点的数据结构一致 --是组合模式的特点
+console.log('%%%%%%%%%%%%%%%%%%%%%%---组合模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+const vitrulDom = {
+  tag: 'div',
+  attr: {
+    id: 'div1',
+    className: 'wrapper',
+  },
+  children: [{
+      tag: 'span',
+      attr: {
+
+      },
+      children: ['span-one']
+
+    },
+    {
+      tag: 'span',
+      attr: {
+
+      },
+      children: ['span-two']
+
+    }
+
+  ]
+
+}
+
+/* 享元模式 */
+// 共享数据，节省开销，js没有经典场景
+console.log('%%%%%%%%%%%%%%%%%%%%%%---享元模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
+// 父级代理点击事件
+/* <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul> */
