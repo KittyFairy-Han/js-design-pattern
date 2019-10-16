@@ -2,7 +2,7 @@
  * @Author: 鱼小柔 
  * @Date: 2019-10-11 08:23:02 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-10-16 08:02:18
+ * @Last Modified time: 2019-10-17 07:12:05
  */
 
 /* 职责链模式 */
@@ -67,7 +67,7 @@ class Invoker {
 let soldier = new Receiver('士兵')
 let trumpeter = new Command('小号手', soldier)
 let general = new Invoker('将军', trumpeter)
-general.invoke()
+general.ivk()
 
 /* 中介者模式 */
 // N:N 数据双向流通
@@ -150,47 +150,28 @@ vip.todo()
 /* 桥接模式 */
 // 一个类拆分成两个类 再连接
 console.log('%%%%%%%%%%%%%%%%%%%%%%---桥接模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
-/* class ColorShape {
-    yellowCircle(){
-        console.log('yellow circle')
-    }
-    redCircle() {
-        console.log('red circle')
-    }
-    yellowTri() {
-        console.log('yellow triangle')
-    }
-    redTri() {
-        console.log('red triangle')
-    }
-}
-// 测试代码
-let cs = new ColorShape()
-cs.yellowCircle()
-cs.redCircle()
-cs.yellowTri()
-cs.redTri() */
 class Color {
+  constructor(color) {
+    this.color = color
+  }
+}
+class Shape {
   constructor(type) {
     this.type = type
   }
 }
-class Shape {
-  constructor(type, color) {
-    this.type = type
-    this.color = color
-  }
-  draw() {
-    console.log(`${this.type} ${this.color}`)
-  }
+class Draw{
+   constructor(type,color){
+     console.log(type,color)
+   }
 }
 //测试代码
 let red = new Color('red')
 let yellow = new Color('red')
-let circle = new Color('circle', red)
-let triangle = new Color('triangle', yellow)
-circle.draw()
-triangle.draw()
+let circle = new Shape('circle', red)
+let triangle = new Shape('triangle', yellow)
+new Draw(circle,red)
+new Draw(triangle, yellow)
 
 /* 备忘录模式 */
 console.log('%%%%%%%%%%%%%%%%%%%%%%---备忘录模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
@@ -211,7 +192,7 @@ class CareTaker {
   add(memeto) {
     this.list.push(memeto)
   }
-  get(index) {
+  get() {
     return this.list.pop()
   }
 }
@@ -223,12 +204,18 @@ class Editor {
   }
   setContent(content) {
     this.content = content
+    console.log(`set=${this.content}`)
+  }
+  getContent() {
+    console.log(this.content)
   }
   saveContentToMemeto() {
     this.ck.add(new Memeto(this.content))
+    console.log(`保存：${this.content}`)    
   }
   getContentFeomMemeto() {
-    this.content = memeto.getContent()
+    this.content = (this.ck.get()).getContent()
+    console.log(`撤销后：${this.content}`)
   }
 }
 // 测试代码
@@ -241,7 +228,6 @@ editor.saveContentToMemeto() //保存
 editor.setContent('修改444')
 editor.getContentFeomMemeto() //撤销
 editor.getContentFeomMemeto() //撤销
-
 /* 原型模式 */
 console.log('%%%%%%%%%%%%%%%%%%%%%%---原型模式---%%%%%%%%%%%%%%%%%%%%%%%%%')
 const prototypeObj = {
@@ -253,7 +239,7 @@ const prototypeObj = {
 let x = Object.create(prototypeObj)
 x.first = 'A'
 x.last = 'B'
-alert(x.getName())
+console.log(x.getName())
 
 /* 组合模式（树形结构） */
 // 整体和单个节点操作一致，整体和单个节点的数据结构一致 --是组合模式的特点
