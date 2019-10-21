@@ -2,7 +2,7 @@
  * @Author: 鱼小柔 
  * @Date: 2019-10-11 08:23:02 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-10-17 07:12:05
+ * @Last Modified time: 2019-10-22 07:21:53
  */
 
 /* 职责链模式 */
@@ -270,6 +270,18 @@ const vitrulDom = {
   ]
 
 }
+const successFn = (successData) => {
+  console.log(`8--then successFn`)
+  console.log(successData)
+}
+const failFn = (failMsg) => {
+  console.log(`8--then failFn`)
+  console.log(failMsg)
+}
+loadImg('//www.baidu.com/img/dong_a16028f60eed614e4fa191786f32f417.gif').then(successFn, failFn)
+loadImg('//www.baidu.com/img/dong_a16028f60eed614e4fa191786f32f417.gif').then(successFn, failFn)
+loadImg('//www.baidu.com/img/dong_.gif').then(successFn, failFn)
+
 
 /* 享元模式 */
 // 共享数据，节省开销，js没有经典场景
