@@ -1,4 +1,7 @@
 import {
+    log
+} from '../utils'
+import {
     getCart
 } from "./cart"
 /* 状态机类 */
@@ -55,13 +58,13 @@ export default class Item {
 
 
     // 添加到购物车
+    @log
     addToCart() {
-        console.log('item addToCart')
         this.cart.add(this.data)
     }
     // 从购物车中删除
+    @log
     delFromCart() {
-        console.log('item delFromCart')
         this.cart.del(this.data.id)
     }
 
@@ -93,8 +96,8 @@ export default class Item {
     }
 }
 
-
-function createDiscountItem(data) {
+// 代理器模式(拦截器模式)
+function createDiscountData(data) {
     return new Proxy(data, {
         get: (targetObj, propkey) => {
             if (propkey === 'name') {
@@ -109,9 +112,24 @@ function createDiscountItem(data) {
 
 }
 
+// 适配器模式
+function chagetoDiscountData(src) {
+    let adapter = src
+    if (src.isDis) {
+        adapter.name = src.name + '【折扣】'
+        adapter.price = src.price * 0.8
+    }
+    return adapter
+}
+
+
+
+
 export function createItem(data) {
     if (data.isDis) {
-        data = createDiscountItem(data)
+        data = createDiscountData(data)
+        data = chagetoDiscountData(data)
+        // 用 chagetoDiscountData(data) 也可
     }
     return new Item(data)
 }

@@ -1,9 +1,12 @@
+import {
+    log
+} from '../utils'
 class Cart {
     constructor() {
         this.$el = $(`<section id="cart">购物车</section>`)
     }
     // 初始化
-    init(){
+    init() {
         console.log(`cart init`)
         this.getList()
         this.render()
@@ -16,26 +19,26 @@ class Cart {
             this.$el.append(item.getEl())
         }
     }
-    getList(){
+    getList() {
         this.buyList = []
     }
     //
+    @log
     add(item) {
-        console.log('cart add',item)
         this.buyList.push(item)
-        
+
     }
+    @log
     del(id) {
-        console.log('cart del', id)
         this.buyList = this.buyList.filter(item => {
             return item.id != id
         })
     }
-     
-     // 获取element
-     getEl() {
-         return this.$el
-     }
+
+    // 获取element
+    getEl() {
+        return this.$el
+    }
 }
 
 function getCartWrapper() {
@@ -51,10 +54,3 @@ function getCartWrapper() {
 }
 
 export const getCart = getCartWrapper()
-
-/* export function getCart2() {
-    if(!instance){
-        instance = new Cart()
-    }
-    return instance
-} */
