@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   //入口
-  entry: './src/index.js',
+  entry: './src/demo/index.js',
   //出口
   output: {
     path: __dirname,
@@ -25,7 +25,7 @@ module.exports = {
   //
   plugins: [
     new HtmlWebpackPlugin({
-      template: './index.html'
+      template: './src/demo/index.html'
     })
     //打包的bundle.js插入的html文件
   ],
@@ -34,6 +34,11 @@ module.exports = {
   devServer: { //自动热更新
     contentBase: path.join(__dirname, './release'), //run dev时运行的根目录
     open: true, //自动打开浏览器
-    port: 9000 //端口号
+    port: 9000, //端口号
+    proxy: {
+      '/api/*':{
+        target:'http://localhost:8888'
+      }
+    }
   }
 }

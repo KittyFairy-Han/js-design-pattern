@@ -2,7 +2,7 @@
  * @Author: 鱼小柔 
  * @Date: 2019-09-20 08:03:19 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-09-24 07:24:44
+ * @Last Modified time: 2019-10-23 07:59:53
  */
 
 /* 
@@ -16,7 +16,6 @@ console.log(`~*~*~*~*~*~*~*~*~*~*~~~~概念 - 观察者模式//~*~*~*~*~*~*~*~*~
 /* 主题 */
 class Subject {
     constructor() {
-        // debugger
         this.state = 0
         this.observers = []
     }
@@ -24,7 +23,6 @@ class Subject {
         return this.state
     }
     setState(state) {
-        // debugger
         this.state = state
         this.notifyAllObservers()
     }
