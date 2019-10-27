@@ -21,10 +21,12 @@ class Cart {
     }
     //
     add(item) {
+        console.log('cart add',item)
         this.buyList.push(item)
         
     }
     del(id) {
+        console.log('cart del', id)
         this.buyList = this.buyList.filter(item => {
             return item.id != id
         })
