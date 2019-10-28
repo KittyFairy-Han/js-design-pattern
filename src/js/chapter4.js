@@ -2,7 +2,7 @@
  * @Author: 鱼小柔 
  * @Date: 2019-09-11 07:15:21 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-09-11 07:22:58
+ * @Last Modified time: 2019-10-28 22:33:00
  */
 
 // 工厂模式概念
@@ -36,6 +36,6 @@ class JQ {
 window.$ = function (selector) {
     return new JQ(selector)
 }
-$('div')
+console.log($('div'))
 // 2--React.createElement
 // 3--Vue异步组件
