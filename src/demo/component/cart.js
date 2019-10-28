@@ -1,6 +1,11 @@
 import {
     log
 } from '../utils'
+import {
+    fetchList
+} from '../io/api/buy-list'
+
+
 class Cart {
     constructor() {
         this.$el = $(`<section id="cart">购物车</section>`)
@@ -9,30 +14,45 @@ class Cart {
     init() {
         console.log(`cart init`)
         this.getList()
-        this.render()
     }
     // 渲染
     render() {
         console.log(`cart render`)
-        if (!this.buyList.length) return
-        for (const item of this.buyList) {
-            this.$el.append(item.getEl())
-        }
+        // console.log(this.buyList)
+        const tex = this.buyList.join('--\n')
+        this.$el.text(tex)
     }
+    // 刷新
+    refresh() {
+        console.log(`cart refresh`)
+        this.$el.empty()
+        this.render()
+    }
+    // 获取数据
     getList() {
-        this.buyList = []
-    }
-    //
-    @log
-    add(item) {
-        this.buyList.push(item)
-
-    }
-    @log
-    del(id) {
-        this.buyList = this.buyList.filter(item => {
-            return item.id != id
+        fetchList().then(data => {
+            console.log(data)
+            this.buyList = []
+            for (const item of data) {
+                this.buyList.push(item.name)
+            }
+        }).then(() => {
+            this.render()
         })
+    }
+    // 操作 装饰器模式 观察者模式
+    @log
+    add(itemName) {
+        this.buyList.push(itemName)
+        this.refresh() 
+    }
+    @log
+    del(itemName) {
+        this.buyList = this.buyList.filter(item => {
+            return item != itemName
+        })
+        // console.log(this.buyList)
+        this.refresh()
     }
 
     // 获取element
@@ -41,6 +61,7 @@ class Cart {
     }
 }
 
+// 单例模式
 function getCartWrapper() {
     let instance
 

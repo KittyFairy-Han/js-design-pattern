@@ -16,16 +16,17 @@ export default class Item {
     // 初始化
     init() {
         console.log(`item init`)
+        // 状态模式
         this.fsm = new StateMachine({
-            init: '取消加购',
+            init: '加入购物车',
             // 状态集合
             transitions: [{
-                    name: 'doBuy',
+                    name: 'deleteBuy',
                     from: '取消加购',
                     to: '加入购物车'
                 },
                 {
-                    name: 'deleteBuy',
+                    name: 'doBuy',
                     from: '加入购物车',
                     to: '取消加购'
                 },
@@ -34,15 +35,15 @@ export default class Item {
                 // 执行加购 <=> [状态过渡].handle([主体])
                 onDoBuy(self, itemSelf) {
                     // 主体接下来的业务逻辑
-                    // console.log(self, itemSelf)
-                    itemSelf.$btn.text('取消加购')
+                    console.log('onDobuy',self, itemSelf)
+                    itemSelf.$btn.text(self.to)
                     itemSelf.addToCart()
                 },
                 // 取消加购 <=> [状态过渡].handle([主体])
                 onDeleteBuy(self, itemSelf) {
                     // 主体接下来的业务逻辑
-                    // console.log(self, itemSelf)
-                    itemSelf.$btn.text('加入购物车')
+                    console.log('ondelBuy',self, itemSelf)
+                    itemSelf.$btn.text(self.to)
                     itemSelf.delFromCart()
                 }
             }
@@ -55,41 +56,43 @@ export default class Item {
         this.renderContent()
         this.renderBtn()
     }
+     renderContent() {
+         let content = ''
+         for (const val of Object.values(this.data)) {
+             content += `<span>${val}</span>`
+         }
+         this.$content = $(content)
+         this.$el.append(this.$content)
+     }
+     renderBtn() {
+         this.$btn = $(`<button>加入购物车</button>`)
+         this.$btn.click(() => {
+             console.log(`item.$btn click`)
+             console.log(this.fsm)
+             if (this.fsm.is('加入购物车')) {
+                 // 【状态机】.【状态过渡】 <=> [某一状态过渡].handle([主体])
+                 this.fsm.doBuy(this)
+             } else {
+                 // 【状态机】.【状态过渡】 <=> [某一状态过渡].handle([主体])
+                 this.fsm.deleteBuy(this)
+             }
+         })
+         this.$el.append(this.$btn)
+     }
 
 
-    // 添加到购物车
+    // 添加到购物车 装饰器模式
     @log
     addToCart() {
-        this.cart.add(this.data)
+        this.cart.add(this.data.name)
     }
-    // 从购物车中删除
+    // 从购物车中删除 装饰器模式
     @log
     delFromCart() {
-        this.cart.del(this.data.id)
+        this.cart.del(this.data.name)
     }
-
-    renderContent() {
-        let content = ''
-        for (const val of Object.values(this.data)) {
-            content += `<span>${val}</span>`
-        }
-        this.$content = $(content)
-        this.$el.append(this.$content)
-    }
-    renderBtn() {
-        this.$btn = $(`<button>t</button>`)
-        this.$btn.click(() => {
-            console.log(`item.$btn click`)
-            if (this.fsm.is('加入购物车')) {
-                // 【状态机】.【状态过渡】 <=> [某一状态过渡].handle([主体])
-                this.fsm.deleteBuy(this)
-            } else {
-                // 【状态机】.【状态过渡】 <=> [某一状态过渡].handle([主体])
-                this.fsm.doBuy(this)
-            }
-        })
-        this.$el.append(this.$btn)
-    }
+    
+   
     // 获取element
     getEl() {
         return this.$el
@@ -124,12 +127,12 @@ function chagetoDiscountData(src) {
 
 
 
-
+// 工厂模式
 export function createItem(data) {
     if (data.isDis) {
         data = createDiscountData(data)
-        data = chagetoDiscountData(data)
         // 用 chagetoDiscountData(data) 也可
-    }
+    } 
+    // console.log(new Item(data))
     return new Item(data)
 }

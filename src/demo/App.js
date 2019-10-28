@@ -1,4 +1,3 @@
-import ShoppingCart from "./component/shoppingCartBtn"
 import List from "./component/list"
 import { getCart } from "./component/cart"
 export default class App {
@@ -8,7 +7,6 @@ export default class App {
    // 初始化
    init() {
       console.log(`app init`)
-      // this.initShoppingCartBtn()
       this.initList()
       this.initCart()
       this.render()
@@ -18,10 +16,7 @@ export default class App {
       console.log(`app render`)
       this.$el.append( this.list.getEl(), this.cart.getEl())
    }
-   initShoppingCartBtn() {
-      this.shoppingCartBtn = new ShoppingCart()
-      this.shoppingCartBtn.init()
-   }
+   
    initList() {
       this.list = new List()
       this.list.init()

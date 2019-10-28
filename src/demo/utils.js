@@ -9,7 +9,7 @@ export function log(targetObj, propName, propDescriptor) {
         // 执行原函数的逻辑
         originFn.apply(this, args)
     }
-    console.log(propDescriptor)
+    // console.log(propDescriptor)
     return propDescriptor
 }
 
