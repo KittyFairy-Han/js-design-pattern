@@ -2,7 +2,7 @@
  * @Author: 鱼小柔 
  * @Date: 2019-09-20 08:03:19 
  * @Last Modified by: 鱼小柔
- * @Last Modified time: 2019-10-20 09:34:09
+ * @Last Modified time: 2019-10-28 23:02:09
  */
 
 /* 
@@ -160,7 +160,7 @@ class myPromise {
 }
 
 /* 有限状态机类 */
-const StateMachine = require('javascript-state-machine');
+// const StateMachine = require('javascript-state-machine');
 let promiseFsm = new StateMachine({
   init: 'pending',
   transitions: [{
